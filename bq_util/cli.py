@@ -33,6 +33,8 @@ def first_command(example, option):
         str(project_dir),
         "--profiles-dir",
         str(profiles_dir),
+        "--vars",
+        '{"BQ_UTIL_DATASET": "test_data", "BQ_UTIL_PROJECT": "test_project"}',
     ]
 
     # run the command

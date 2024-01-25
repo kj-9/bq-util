@@ -1,0 +1,13 @@
+dbt_bq_util:
+  outputs:
+    cli:
+      dataset: "{{ var('BQ_UTIL_DATASET') }}"
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      method: oauth
+      location: asia-northeast1
+      priority: interactive
+      project: "{{ var('BQ_UTIL_PROJECT') }}"
+      threads: 4
+      type: bigquery
+  target: cli
