@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import click
@@ -21,13 +22,20 @@ def cli():
     required=True,
     help="The BigQuery dataset to use for the DBT project.",
 )
-def compile(project, dataset):
+def compile(project, dataset, location="asia-northeast1"):
     project_dir = Path(__file__).parent / "dbt_bq_util"
     dbt_packages_dir = project_dir / "dbt_packages"
     profiles_dir = project_dir / "profiles"
 
     # initialize
     dbt = dbtRunner()
+
+    dbt_vars = {
+        "PROJECT": project,
+        "DATASET": dataset,
+        "LOCATION": location,
+        "DBT_PACKAGES_DIR": str(dbt_packages_dir),
+    }
 
     # create CLI args as a list of strings
     cli_args = [
@@ -39,7 +47,7 @@ def compile(project, dataset):
         "--profiles-dir",
         str(profiles_dir),
         "--vars",
-        f'{{"BQ_UTIL_PROJECT": "{project}", "BQ_UTIL_DATASET": "{dataset}", "DBT_BQ_UTIL_DIR": "{str(dbt_packages_dir)}"}}',
+        json.dumps(dbt_vars),
     ]
 
     click.echo(f"Running: dbt {cli_args}")

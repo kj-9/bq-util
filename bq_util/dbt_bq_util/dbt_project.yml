@@ -23,7 +23,7 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
-packages-install-path: "{{ var('DBT_BQ_UTIL_DIR') }}"
+packages-install-path: "{{ var('DBT_PACKAGES_DIR') }}"
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
