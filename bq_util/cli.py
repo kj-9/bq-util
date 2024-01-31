@@ -11,14 +11,19 @@ def cli():
 
 
 @cli.command(name="compile")
-@click.argument("example")
 @click.option(
-    "-o",
-    "--option",
-    help="An example option",
+    "--project",
+    required=True,
+    help="The GCP project to use for the BigQuery dataset.",
 )
-def first_command(example, option):
+@click.option(
+    "--dataset",
+    required=True,
+    help="The BigQuery dataset to use for the DBT project.",
+)
+def compile(project, dataset):
     project_dir = Path(__file__).parent / "dbt_bq_util"
+    dbt_packages_dir = project_dir / "dbt_packages"
     profiles_dir = project_dir / "profiles"
 
     # initialize
@@ -34,15 +39,14 @@ def first_command(example, option):
         "--profiles-dir",
         str(profiles_dir),
         "--vars",
-        '{"BQ_UTIL_DATASET": "test_data", "BQ_UTIL_PROJECT": "test_project"}',
+        f'{{"BQ_UTIL_PROJECT": "{project}", "BQ_UTIL_DATASET": "{dataset}", "DBT_BQ_UTIL_DIR": "{str(dbt_packages_dir)}"}}',
     ]
+
+    click.echo(f"Running: dbt {cli_args}")
 
     # run the command
     res: dbtRunnerResult = dbt.invoke(cli_args)
 
-    print(res)
-
     # inspect the results
     for r in res.result:
-        print(f"{r.node.name}: {r.status}")
-    import dbt
+        click.echo(f"{r.node.name}: {r.status}")
